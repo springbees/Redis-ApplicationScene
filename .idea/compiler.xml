@@ -6,15 +6,21 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="redis-string-02" />
         <module name="redsis-hello-01" />
+        <module name="redis-list-03" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="redis-list-03" target="1.8" />
+      <module name="redis-string-02" target="1.8" />
       <module name="redsis-hello-01" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="redis-list-03" options="-parameters" />
+      <module name="redis-string-02" options="-parameters" />
       <module name="redsis-hello-01" options="-parameters" />
     </option>
   </component>

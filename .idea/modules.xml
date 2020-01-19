@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/redis-list-03/redis-list-03.iml" filepath="$PROJECT_DIR$/redis-list-03/redis-list-03.iml" />
+      <module fileurl="file://$PROJECT_DIR$/redis-string-02/redis-string-02.iml" filepath="$PROJECT_DIR$/redis-string-02/redis-string-02.iml" />
       <module fileurl="file://$PROJECT_DIR$/redsis-hello-01/redsis-hello-01.iml" filepath="$PROJECT_DIR$/redsis-hello-01/redsis-hello-01.iml" />
     </modules>
   </component>
