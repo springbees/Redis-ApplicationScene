@@ -1,11 +1,13 @@
 package com.jacklinsir.redis.service.impl;
 
-import com.jacklinsir.redis.component.RedisService;
+import com.jacklinsir.redis.common.Constant;
 import com.jacklinsir.redis.dao.NoticeDao;
 import com.jacklinsir.redis.model.Notice;
 import com.jacklinsir.redis.service.INoticeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -25,7 +27,7 @@ public class NoticeServiceImpl implements INoticeService {
     private NoticeDao noticeDao;
 
     @Autowired
-    private RedisService redisService;
+    private RedisTemplate redisTemplate;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -41,8 +43,10 @@ public class NoticeServiceImpl implements INoticeService {
         //这一步判断保证数据的双写一致性
         if (pushNotice > 0 && id > 0) {
             //插入到redis数据库中
-            redisService.push(notice);
-            log.debug("数据添加到Redis数据库中: {}", notice);
+            ListOperations listOperations = redisTemplate.opsForList();
+            //将数据保存到redis服务器
+            listOperations.leftPush(Constant.KEY_NOTICE_ID, notice);
+            log.info("数据添加到Redis数据库中: {}", notice);
         }
         return pushNotice;
     }

@@ -33,7 +33,7 @@ public class MailService {
      * 发送邮件
      */
     public void sendEmail(MailDto dto) {
-        log.debug("发送邮件");
+        log.info("发送邮件");
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "utf-8");
@@ -49,7 +49,7 @@ public class MailService {
             log.debug("邮件发送成功！");
         } catch (Exception e) {
             e.printStackTrace();
-            log.debug("发送邮件-异常: {}", e.fillInStackTrace());
+            log.info("发送邮件-异常: {}", e.fillInStackTrace());
         }
     }
 

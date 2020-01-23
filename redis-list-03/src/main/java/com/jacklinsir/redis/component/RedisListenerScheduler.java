@@ -9,6 +9,8 @@ import com.jacklinsir.redis.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -32,11 +34,7 @@ import java.util.concurrent.Executors;
 public class RedisListenerScheduler {
 
     @Autowired
-    private RedisService redisService;
-
-
-    @Autowired
-    private INoticeService noticeService;
+    private RedisTemplate redisTemplate;
 
     @Autowired
     private IUserService userService;
@@ -48,26 +46,23 @@ public class RedisListenerScheduler {
     private Environment env;
 
 
-    @Scheduled(cron = "0 * * * * ?")
+    @Scheduled(cron = "0/30 * * * * ?")
     public void schedulerListenNotice() {
         log.info("----定时任务调度队列监听、检测通告消息，监听list中的数据");
         //去Redis服务器查询数据
-        List<Notice> notices = redisService.rightPop(Constant.KEY_NOTICE_ID);
-        //定时任务执行到当前对象不为空则调用发送邮件服务，给商户发送邮件
-        while (notices.size() > 0) {
+        ListOperations listOperations = redisTemplate.opsForList();
+        Notice notice = (Notice) listOperations.rightPop(Constant.KEY_NOTICE_ID);
+        while (notice != null) {
             //TODO调用发送邮件
-            notices.forEach(notice -> {
-                this.sendEmailMerchant(notice);
-            });
+            this.sendEmailMerchant(notice);
+            notice = (Notice) listOperations.rightPop(Constant.KEY_NOTICE_ID);
+
         }
-
-
     }
 
     //TODO:发送通知给到不同的商户
     public void sendEmailMerchant(Notice notice) {
-        List<Notice> notices = redisService.rightPop(Constant.KEY_NOTICE_ID);
-        if (notices.size() > 0) {
+        if (notice != null) {
             List<User> users = userService.listAllUser();
             users.forEach(user -> {
                 log.info("近实时的定时任务检测-发送通知给到不同的商户 - ID: {}", user.getId());
@@ -77,6 +72,4 @@ public class RedisListenerScheduler {
             });
         }
     }
-
-
 }
