@@ -17,7 +17,7 @@ import lombok.Setter;
 public enum ResultCode implements IErrorCode {
 
     SUCCESS(200, "请求成功！"),
-    FIELD(500, "请求失败！");
+    FAILURE(500, "请求失败！");
 
     private long code;
 
